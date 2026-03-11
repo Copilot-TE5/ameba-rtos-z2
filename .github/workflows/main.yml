@@ -17,6 +17,11 @@ jobs:
                   ref: ${{ github.event.pull_request.head.sha }}
                   path: ameba-rtos-z2
 
+            - name: Install build dependencies
+              run: |
+                    sudo apt-get update
+                    sudo apt-get install -y bc python-is-python3
+
             - name: Build amebaz2
               run: |
                     echo "Setting up build environment"
@@ -25,7 +30,17 @@ jobs:
                     echo "Building firmware image"
                     make is
                     echo "Build image completed"
-                    make clean
+
+            - name: Upload amebaz2 images
+              uses: actions/upload-artifact@v4
+              with:
+                  name: amebaz2-images
+                  path: |
+                      ameba-rtos-z2/project/realtek_amebaz2_v0_example/GCC-RELEASE/partition.bin
+                      ameba-rtos-z2/project/realtek_amebaz2_v0_example/GCC-RELEASE/bootloader/Debug/bin/bootloader.bin
+                      ameba-rtos-z2/project/realtek_amebaz2_v0_example/GCC-RELEASE/application_is/Debug/bin/firmware_is.bin
+                      ameba-rtos-z2/project/realtek_amebaz2_v0_example/GCC-RELEASE/application_is/Debug/bin/flash_is.bin
+                  if-no-files-found: error
 
             - name: Build amebaz2plus
               run: |
@@ -35,4 +50,14 @@ jobs:
                     echo "Building firmware image"
                     make is
                     echo "Build image completed"
-                    make clean
+
+            - name: Upload amebaz2plus images
+              uses: actions/upload-artifact@v4
+              with:
+                  name: amebaz2plus-images
+                  path: |
+                      ameba-rtos-z2/project/realtek_amebaz2plus_v0_example/GCC-RELEASE/partition.bin
+                      ameba-rtos-z2/project/realtek_amebaz2plus_v0_example/GCC-RELEASE/bootloader/Debug/bin/bootloader.bin
+                      ameba-rtos-z2/project/realtek_amebaz2plus_v0_example/GCC-RELEASE/application_is/Debug/bin/firmware_is.bin
+                      ameba-rtos-z2/project/realtek_amebaz2plus_v0_example/GCC-RELEASE/application_is/Debug/bin/flash_is.bin
+                  if-no-files-found: error
